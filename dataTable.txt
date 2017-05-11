@@ -1,0 +1,6 @@
+Sample	SeqPlatform	Library	SeqType	ReadGroup	Directory	SeqFile1	SeqFile2
+sample1	Illumina	SRR504483	Paired-end	RG1_SRR504483	/media/disk2/LCA_data	SRR504483_1.fastq	SRR504483_2.fastq
+sample2	Illumina	SRR504515	Paired-end	RG1_SRR504515	/media/disk2/LCA_data	SRR504515_1.fastq	SRR504515_2.fastq
+sample3	Illumina	SRR504516	Paired-end	RG1_SRR504516	/media/disk2/LCA_data	SRR504516_1.fastq	SRR504516_2.fastq
+sample4	Illumina	SRR504517	Paired-end	RG1_SRR504517	/media/disk2/LCA_data	SRR504517_1.fastq	SRR504517_2.fastq
+sample5	Illumina	SRR776598	Paired-end	RG1_SRR776598	/media/disk2/LCA_data	SRR776598_1.fastq	SRR776598_2.fastq

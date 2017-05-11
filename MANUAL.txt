@@ -1,0 +1,167 @@
+Copyright (C) 2013, 2014, Gao Lab
+
+The fastq2vcf is developed by the Gao Lab. 
+
+This program is free software for academic users.
+
+For commercial users, please contact the Gao Lab at <ray.x.gao at gmail.com>.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY. 
+
+For questions and comments, please contact us at <ray.x.gao at gmail.com>.
+
+For more information about fastq2vcf, please visit our web page at <https://rgao.peoople.uic.edu/fastq2vcf>.
+
+--------------------------------------------------------------------------------
+Prerequisites
+--------------------------------------------------------------------------------
+
+The programs and software are required to be installed before running the fastq2vcf:
+	FastQC v0.10.1
+	bwa-0.7.5
+	picard-tools-1.105
+	samtools-0.1.19
+	GenomeAnalysisTK-2.8-1.tar.bz2
+	bcftools
+	vcftools_0.1.11
+	tabix-0.2.6
+	annovar 
+	perlv5.10.1
+	SNVer-0.5.3
+	JAVA1.7.0
+	Perl module: Config::Abstract::Ini 0.13
+
+If you do not already have BWA index files for hg19 on your computer, you can build them with these instructions (Note: you only need to do this once):
+
+i: Download the reference files for hg19 using the following command (mac users, use "curl" instead of "wget"):
+ 
+shell> get ftp://gsapubftp-anonymous@ftp.broadinstitute.org/bundle/2.8/hg19/*
+
+ii: After the download has completed, generate the BWA index files using the following command: 
+
+shell> bwa index -a bwtsw ucsc.hg19.fasta
+
+
+--------------------------------------------------------------------------------
+Installation
+--------------------------------------------------------------------------------
+
+Download the fastq2vcf.tar.gz file from the website:
+	
+Extract the file:
+shell> tar zxvf fastq2vcf.tar.gz 
+	
+change into the directory:
+shell> cd fastq2vcf/
+	
+You will see four files:
+	fastq2vcf.pl
+	dataTable.txt
+	config.ini
+	cluster.conf
+		
+--------------------------------------------------------------------------------
+Single vs Cluster Computing. 
+--------------------------------------------------------------------------------
+
+The fastq2vcf can run on both a single Linux environment and in a clustered Linux environment.  By default, fasq2vcf is configured to run on a single Linux environment.
+
+To run it on cluster environment, users need to specify runEnvironment=1 in the config.ini file. Users need to also edit cluster.conf with the correct cluster configuration header according to the configuration requirement of the clusters. 
+
+--------------------------------------------------------------------------------
+HOWTO: run fastq2vcf analysis 
+--------------------------------------------------------------------------------
+
+Before running the pipeline you must update "dataTable.txt" and "config.ini" with values that are relavent for your analysis:
+
+1. cd fastq2vcf
+
+2. Update the “Directory" field in dataTable.txt with the path to the directory that contains the raw sequence data in FASTQ format.	
+
+3. Edit config.ini and make sure all the paths for programs and reference files are correct. 
+
+Run fastq2vcf:
+
+1. On Single Linux server environment: 
+
+There are 5 steps to run fastq2vcf:  
+
+	1). Generate the shell scripts for all samples:
+
+shell> perl fastq2vcf.v9.pl -d dataTable.txt -c config.ini -o $PWD 
+		
+		Note: After running this step, you will generate three shell scripts per sample, QC_Mapping, PreCalling and Variant. 
+	
+	2). QC and Mapping: 
+
+shell> nohup sh QC_Mapping_sample1_RG1_SRR504483.sh & 
+shell> nohup sh QC_Mapping_sample2_RG1_SRR504515.sh & 
+shell> nohup sh QC_Mapping_sample3_RG1_SRR504516.sh &
+shell> nohup sh QC_Mapping_sample4_RG1_SRR504517.sh &
+shell> nohup sh QC_Mapping_sample5_RG1_SRR776598.sh & 
+
+	3). When those scripts have finished executing, mark duplicates, realignments, quality recalibration and data compression:
+
+shell> nohup sh PreCalling_sample1.sh &
+shell> nohup sh PreCalling_sample2.sh &
+shell> nohup sh PreCalling_sample3.sh &
+shell> nohup sh PreCalling_sample4.sh &
+shell> nohup sh PreCalling_sample5.sh &
+	
+	4). When those scripts have finished executing, perform multi-sample variant calling: we use four variant callers to call variants. 
+
+shell> nohup sh variant.HaplotypeCaller.sh &
+shell> nohup sh variant.samtools.sh &
+shell> nohup sh variant.SNVer.sh &
+shell> nohup sh variant.UnifiedGenotyper.sh &
+
+		Note: After running this step, you will get all the annotated variants for all samples from each caller.  
+
+	5). Finally, run variant summary: 
+		
+shell> nohup sh variant.summary.sh &
+		
+		Note: After running this step, you will get the overlapped variant call set among 4 callers. 
+		
+		Final annotated variants will be written into Variant/. 
+
+2. On a Cluster environment: 
+Cluster/parallel computing header information is stored in the file, cluster.conf. In the config.ini, set parallel=1 in [PARAMETERS]. 
+
+There are 5 steps to run fastq2vcf:  
+
+	1). Generate the shell scripts for all samples:
+
+shell> perl fastq2vcf.v9.pl -d dataTable.txt -c config.ini -o $PWD 
+		Note: After running this step, you will generate a series of shell scripts for this run. 
+	
+	2). Run QC and Mapping: 
+
+shell> qsub QC_Mapping_sample1_RG1_SRR504483.sh
+shell> qsub QC_Mapping_sample2_RG1_SRR504515.sh 
+shell> qsub QC_Mapping_sample3_RG1_SRR504516.sh
+shell> qsub QC_Mapping_sample4_RG1_SRR504517.sh
+shell> qsub QC_Mapping_sample5_RG1_SRR776598.sh
+
+	3). When those scripts have finished executing, mark duplicates, realignments, quality recalibration and data compression:
+	
+shell> qsub PreCalling_sample1.sh
+shell> qsub PreCalling_sample2.sh
+shell> qsub PreCalling_sample3.sh
+shell> qsub PreCalling_sample4.sh
+shell> qsub PreCalling_sample5.sh
+	
+	4). When those scripts have finished executing, perform multi-sample variant calling: we use four variant callers to call variants.
+	 
+shell> qsub variant.HaplotypeCaller.sh
+shell> qsub variant.samtools.sh
+shell> qsub variant.SNVer.sh
+shell> qsub variant.UnifiedGenotyper.sh
+
+		Note: After running this step, you will get all the annotated variants for all samples from each caller.  
+
+	5). Finally, run variant summary: 
+		
+shell> qsub variant.summary.sh
+		
+		Note: After running this step, you will get the overlapped variant call set among 4 callers.
