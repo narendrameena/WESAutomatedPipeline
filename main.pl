@@ -1,10 +1,5 @@
-#author narumeena
-#description devlop automaticaly shell script of variaent calling pipeline
-
-
-
-
-
+# author: narumeena
+# description: devlop automaticaly shell script of variaent calling pipeline
 
 
 # purpose:   read a pipe-delimited text file (i.e., the "fields" are separated by

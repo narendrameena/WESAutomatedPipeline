@@ -6,10 +6,17 @@
 	objectVersion = 46;
 	objects = {
 
+/* Begin PBXFileReference section */
+		436534D51EC4619900388751 /* main.pl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; path = main.pl; sourceTree = "<group>"; };
+		436534D61EC465D400388751 /* sample.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = sample.txt; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
 /* Begin PBXGroup section */
 		436534CA1EC460C200388751 = {
 			isa = PBXGroup;
 			children = (
+				436534D51EC4619900388751 /* main.pl */,
+				436534D61EC465D400388751 /* sample.txt */,
 			);
 			sourceTree = "<group>";
 		};
@@ -22,7 +29,8 @@
 			buildConfigurationList = 436534D21EC460C200388751 /* Build configuration list for PBXLegacyTarget "WESAutomaticPipeline" */;
 			buildPhases = (
 			);
-			buildToolPath = /usr/bin/make;
+			buildToolPath = /usr/bin/perl;
+			buildWorkingDirectory = "";
 			dependencies = (
 			);
 			name = WESAutomaticPipeline;
