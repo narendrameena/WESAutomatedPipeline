@@ -1,1 +1,6 @@
-field1 data | field2 data | field 3
+Sample	SeqPlatform	Library	SeqType	Directory	SeqFile1	SeqFile2
+sample1	Illumina	SRR504483	Paired-end ~/data	SRR504483_1.fastq	SRR504483_2.fastq
+sample2	Illumina	SRR504515	Paired-end ~/data	SRR504515_1.fastq	SRR504515_2.fastq
+sample3	Illumina	SRR504516	Paired-end ~/data	SRR504516_1.fastq	SRR504516_2.fastq
+sample4	Illumina	SRR504517	Paired-end ~/data	SRR504517_1.fastq	SRR504517_2.fastq
+sample5	Illumina	SRR776598	Paired-end ~/data	SRR776598_1.fastq	SRR776598_2.fastq
